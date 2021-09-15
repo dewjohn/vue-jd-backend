@@ -33,7 +33,7 @@ async function createOrder(sessionUserName, data = {}){
     phone
    } = address
   // 获取购买的商品列表
-  const pIds = products.map(p=>p.id) // 格式如 ['商品1的Id','商品2的Id']
+  const pIds = products.map(p=>p.id) // pIds格式如 ['商品1的Id','商品2的Id']
   const productList = await Product.find({
     _id: {
       $in: pIds
@@ -51,8 +51,8 @@ async function createOrder(sessionUserName, data = {}){
     }
     console.log(filterProducts.id);
     return {
-      product: p,
-      num: filterProducts[0].num
+      orderProduct: p,
+      orderNum: filterProducts[0].num
     }
   })
   // console.log('*********',address);
@@ -63,7 +63,7 @@ async function createOrder(sessionUserName, data = {}){
     shopId,
     shopName,
     isCanceled,
-    products: productListWidthNum
+    orderProducts: productListWidthNum
   })
   return newOrder
 }

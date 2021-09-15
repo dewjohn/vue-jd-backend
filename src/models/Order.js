@@ -1,19 +1,17 @@
 /**
  * @description Order Model
- * @author 双越老师
  */
 
  const mongoose = require('../db/db')
 
  const Schema = mongoose.Schema({
-     username: String,
- 
+     username: {
+         type: String,
+         require: true
+     },
      // 收货地址，格式参考 Address.js
      address: {
-         username: { // 用户名
-             type: String,
-             required: true
-         },
+         username: String,
          city: String, // 城市
          department: String, // 小区
          houseNumber: String, // 门牌号
@@ -30,24 +28,23 @@
          default: false // 默认不取消
      }, 
  
-     products: [
+     orderProducts: [
          // 商品列表，参考 Product.js
          {
-             num: Number, // 销量
-             product: {
-                 shopId: { // 商店 id
-                     type: String,
-                     require: true
-                 },
-                 name: String,
-                 imgUrl: String,
-                 sales: Number, // 月售多少
-                 price: Number, // 当前价格
-                 oldPrice: Number // 原价
-             }
+            orderProduct: {
+                shopId: { // 商店 id
+                    type: String,
+                    require: true
+                },
+                name: String,
+                imgUrl: String,
+                sales: Number, // 月售多少
+                price: Number, // 当前价格
+                oldPrice: Number, // 原价
+            },
+            orderNum: Number, // 购买数量
          }
      ]
- 
  }, { timestamps: true })
  
  const Order = mongoose.model('order', Schema)

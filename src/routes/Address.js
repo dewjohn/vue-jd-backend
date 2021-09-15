@@ -13,6 +13,7 @@ router.post('/', loginCheck, async function(ctx, next){
   const userInfo = ctx.session.userInfo
   const username = userInfo.username
   const data = ctx.request.body
+  console.log(data,'+++++++++++++++++');
   try{
     const newAddress = await createAddress(username, data)
     ctx.body = new SuccessModel(newAddress)

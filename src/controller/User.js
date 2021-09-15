@@ -35,4 +35,10 @@ async function login(username, password) {
   }
 }
 
-module.exports = { register, login }
+async function getUser(username){
+  const detail = await User.findOne({ username })
+  console.log(detail,'++++++++++++++')
+  return detail
+}
+
+module.exports = { register, login, getUser }

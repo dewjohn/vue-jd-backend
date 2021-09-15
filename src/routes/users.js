@@ -1,8 +1,10 @@
 const router = require('koa-router')()
 
-const { register, login } = require('../controller/User')
+const { register, login, getUser } = require('../controller/User')
 
 const { SuccessModel, ErrorModel } = require('../res-model/index')
+
+const loginCheck = require('../middleware/loginCheck')
 
 router.prefix('/api/user')
 
@@ -46,6 +48,14 @@ router.post('/login',async function(ctx, next){
     // 登录失败
     ctx.body = new ErrorModel(-3,'登录验证失败')
   }
+})
+
+// “我的”页面获取用户名和Id
+router.get('/', loginCheck, async function(ctx, next){
+  const userInfo = ctx.session.userInfo
+  const username = userInfo.username
+  const detail = await getUser(username)
+  ctx.body = new SuccessModel(detail)
 })
 
 module.exports = router

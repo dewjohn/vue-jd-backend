@@ -18,9 +18,11 @@ const User = require('../../models/User')
   // })
 
   // 登录：查询单个用户
-  const zhong = await User.findOne({
-    user: 'zhong',
-    password: '123'
-  })
-  console.log('zhong', zhong);
+  // const zhong = await User.findOne({
+  //   user: 'zhong',
+  //   password: '123'
+  // })
+  // console.log('zhong', zhong);
+  const detail = await User.findOne({ username: 'zhong' })
+  console.log(detail,'------')
 })()

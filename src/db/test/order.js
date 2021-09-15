@@ -8,32 +8,70 @@ const Product = require('../../models/Product')
 
 !(async()=>{
   const requestBody = {
-    addressId: '612911c158a3f64406b079dc',
-    shopId: '61299e995934bc5de5eaf070',
-    shopName: '沃尔玛',
-    isCancled: false,
+    addressId: '613b20ccccabd1c26a58de93',
+    shopId: '61362f32476f88998ec1e2cf',
+    shopName: '山姆会员商店',
+    isCanceled: false,
     products:[
       {
-        id: '612baa85e101a0dc977a7f8f',
-        num: 3
-      },
-      {
-        id: '612baa85e101a0dc977a7f92',
-        num: 10
+        id: '61362fd933e92c5799368118',
+        num: 20
       }
     ]
   }
-  // 获取address
-  const address = Address.findById(requestBody.addressId)
-
+  const address = await Address.findById(requestBody.addressId)
+  const { 
+    username,
+    city,
+    department,
+    houseNumber,
+    name,
+    phone
+   } = address
   // 获取商品列表
-  const pIds = requestBody.products.map(item=>item.id)  // 返回 ['1号商品id','2号商品id', '3号商品id']
-  // const productList = await Product.find({
-  //   shopId: requestBody.addressId,
-  //   _id: {
-  //     $in: pIds
-  //   }
-  // })
-  console.log(pIds);
-  // console.log(productList);
+  const pIds = requestBody.products.map(p=>p.id) //['61362fd933e92c5799368111', '61362fd933e92c5799368114']
+  const productList = await Product.find({
+    shopId: requestBody.shopId, // 沃尔玛的商品
+    _id: {
+      $in: pIds
+    }
+  })
+  // 整合购买数量
+  const productListWithSales = productList.map(p=>{
+    const id = p._id.toString()
+    // 找到购买商品数量
+    const filterProducts = requestBody.products.filter(item=>item.id == id)
+    if(filterProducts.length == 0){
+      throw Error('未找到匹配销售数据')
+    }
+    const {
+      shopId,
+      name,
+      imgUrl,
+      sales,
+      price,
+      oldPrice } = p
+    return {
+      orderProduct: {
+        shopId,
+        name,
+        imgUrl,
+        sales,
+        price,
+        oldPrice },
+      orderNum: filterProducts[0].num
+    }
+  })
+
+  console.log(productListWithSales);
+
+  await Order.create({
+    username: 'zhong',
+    shopId: requestBody.shopId,
+    shopName: requestBody.shopName,
+    address:{ username,city,department,houseNumber,name,phone },
+    isCanceled: requestBody.isCanceled,
+    orderProducts: productListWithSales
+  })
+
 })()
